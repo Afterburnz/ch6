@@ -6,7 +6,7 @@ import java.util.Scanner;
 public class StockTrader {
 
     public static void main(String[] args) throws FileNotFoundException {
-        Scanner in = new Scanner(new File("goog_2004_2010.txt"));
+        Scanner in = new Scanner(new File("ibm_2000_2010.txt"));
         String symbol = in.next();
         int n = in.nextInt();
 
@@ -102,7 +102,7 @@ public class StockTrader {
 		return cash + shares * prices[prices.length - 1];
 	}
 	public static String decide(double[] history, boolean holding, double boughtAt) {
-		return dipBuyer(history, holding, boughtAt);  
+		return movingAverage(history, holding, boughtAt);  
 	}
 	public static String buyAndHold(double[] history, boolean holding, double boughtAt) {
 		return "BUY";  
@@ -123,4 +123,23 @@ public class StockTrader {
 			return "SELL";
 		}
 	}
+	public static String movingAverage(double[] history, boolean holding, double boughtAt) {
+		if (history.length < 12) {
+			return "HOLD";
+		}
+		double average = 0;
+		for (int i = history.length-12; i < history.length;i++){
+			average += history[i];
+		}
+		average /= 12;
+		
+		if(holding == false && history[history.length - 1] > average) {
+			return "BUY";
+		}
+		if (holding == true && history[history.length - 1] < average) {
+			return "SELL";
+		}
+		return "HOLD";
+	}
+
 }
